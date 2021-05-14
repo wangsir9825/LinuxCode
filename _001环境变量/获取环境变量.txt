@@ -1,0 +1,16 @@
+#include <stdio.h>
+#include <unistd.h>
+int main(int argc, char* argv[], char* env[])
+{
+    int i = 0;
+    for(i = 0;env[i]; i++)
+    {
+        printf("%s\n",env[i]);
+    }
+    while(1)
+    {
+        printf("Hello world!\n");
+        sleep(1);
+    }
+    return 0;
+}
