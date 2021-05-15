@@ -1,0 +1,16 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+void func1()
+{
+    exit(99);
+}
+int main(int argc,char* argv[], char* env[])
+{
+    printf("-------------");
+    sleep(3);
+   //return 0;//利用return退出进程
+    func1();//利用exit退出进程，退出前刷新缓冲区
+    printf("我已经退出了\n");
+}
+
