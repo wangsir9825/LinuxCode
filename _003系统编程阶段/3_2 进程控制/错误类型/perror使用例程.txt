@@ -1,0 +1,12 @@
+#include <stdio.h> //perror      
+#include <unistd.h> //fork、pid_t      
+int main()      
+{      
+    pid_t pid = fork();//创建一个子进程      
+    if(pid < 0){      
+        perror("fork error");// 如果创建子进程失败，则会在屏幕上打印错误原因      
+        return -1;      
+    }      
+    perror("Is fork successful or not?");// 如果创建子进程失败，则会在屏幕上打印Success
+    return 0;      
+}  
