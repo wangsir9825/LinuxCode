@@ -1,0 +1,32 @@
+#include <stdio.h>//perror
+#include <unistd.h>//fork
+#include <stdlib.h>//exit
+#include <sys/wait.h>//wait、waitpid
+
+int main()
+{
+    pid_t pid = fork();
+    if (pid < 0){
+        perror("fork error");//打印错误信息
+        return -1;
+    }else if (pid == 0){
+        sleep(3);//睡眠3秒
+        exit(99);//退出子进程，退出返回值为99
+    }
+    // int ret = waitpid(-1,NULL,0);//阻塞等待
+    //int ret = waitpid(-1,NULL,WNOHANG);//非阻塞等待
+    int ret;
+    while((ret = waitpid(-1,NULL,WNOHANG)) == 0)//阻塞等待
+    {
+        printf("正在非阻塞等待子进程退出\n");
+        sleep(1);
+    }
+    if (ret > 0){
+        printf("waitpid的返回值是：%d\n",ret);
+    }
+    while(1){
+        printf("父进程正在运行\n");
+        sleep(1);
+    }
+}
+
