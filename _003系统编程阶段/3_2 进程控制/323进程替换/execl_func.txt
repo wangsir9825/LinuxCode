@@ -1,0 +1,10 @@
+#include <stdio.h>
+#include <unistd.h> //execl
+
+int main()
+{
+    printf("execl_func.exe进程开始运行\n");
+    execl("/usr/bin/ls","ls","-l",NULL);
+    printf("execl_func.exe进程继续执行\n");
+    return 0;
+}
