@@ -1,0 +1,16 @@
+#include <stdio.h>
+
+//argc 程序运行参数个数
+//argv 所有的运行参数的字符串地址的保存位置
+//env 环境变量
+int main(int argc, char* argv[], char* env[])
+{
+    int i;
+    for (i = 0; argv[i] != NULL; i++){
+        printf("argv[%d] = [%s]\n", i, argv[i]);//打印运行参数
+    }
+    for (i = 0; env[i] != NULL; i++){
+        printf("env[%d] = [%s]\n", i, env[i]);//打印环境变量
+    }
+
+}

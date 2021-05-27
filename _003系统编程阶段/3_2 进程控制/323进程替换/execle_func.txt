@@ -1,0 +1,11 @@
+#include <stdio.h>
+#include <unistd.h> //execle
+
+int main()
+{
+    printf("execle_func.exe进程开始运行\n");
+    const char* env[] = {"MYVAL=1000", NULL};//自定义一个环境变量
+    execle("./arg.exe", "arg.exe", "-a", "-l", NULL, env);
+    printf("execle_func.exe进程继续执行\n");
+    return 0;
+}
