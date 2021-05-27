@@ -1,0 +1,11 @@
+#include <stdio.h>
+#include <unistd.h> //execv
+#include <stdlib.h>
+int main()
+{
+    printf("execv_func.exe进程开始运行\n");
+    char* const arg_p[] = {"./arg.exe", "-a", "-l", NULL};// 运行参数列表
+    execv("./arg.exe", arg_p);
+    printf("execv_func.exe进程继续执行\n");
+    return 0;
+}
