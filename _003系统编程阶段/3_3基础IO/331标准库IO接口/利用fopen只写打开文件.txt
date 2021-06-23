@@ -1,0 +1,18 @@
+#include <stdio.h>// fopen
+#include <string.h>// strlen
+int main()
+{
+    FILE *fp = fopen("myfile", "w");//以只写权限打开文件，若文件存在则清空内容，文件不存在则重建文件
+    if(!fp){
+        printf("fopen error!\n");
+
+    }
+    const char *msg = "hello world!\n";
+    int count = 5;
+    while(count--){
+        fwrite(msg, strlen(msg), 1, fp);//将hello world！写入文件中，连续写入五次，每次写入1块数据，每块数据大小为strlen(msg)个字节 
+    }
+    fclose(fp);// 关闭文件
+    return 0;
+
+}
