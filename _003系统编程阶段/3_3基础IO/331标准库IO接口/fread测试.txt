@@ -1,0 +1,26 @@
+#include <stdio.h>// fopen perror fread printf
+#include <string.h>// strlen
+int main()
+{
+    FILE *fp = fopen("myfile", "r");//以只读权限打开文件，文件不存在则报错
+    if(fp == NULL)
+    {
+        perror("fopen error");
+        return -1;
+    }
+    char buf[1024] = {0};
+    int ret = fread(buf, 20, 1, fp);//从文件中读取数据，总共读出1块数据，每块数据大小为20个字节
+    if(ret == 0){
+        if(feof(fp)){
+            printf("数据读取成功！\n");
+        }
+        if(ferror(fp)){
+            perror("写入出错\n");
+        }
+
+    }
+    printf("fread的返回值是：%d\n", ret);//打印返回值
+    printf("从文件中读取的数据为：%s\n", buf);// 打印从文件中读取的数据
+    fclose(fp);// 关闭文件
+    return 0;
+}
