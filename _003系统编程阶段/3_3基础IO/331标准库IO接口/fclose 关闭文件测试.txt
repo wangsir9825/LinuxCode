@@ -1,0 +1,9 @@
+#include <stdio.h>
+#include <unistd.h> // sleep
+int main()
+{
+    printf("Hello world!");// 注意这里不要添加回车符，因为回车也会刷新缓冲区
+    fclose(stdout); // 关闭标准输出文件
+    sleep(3);
+    return 0;
+}
