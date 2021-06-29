@@ -1,0 +1,45 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+
+int main (int argc, char *argv[])
+{
+    //int pipe(int pipefd[2])
+    int pipefd[2];//用于存放文件操作符
+    int ret = pipe(pipefd);//创建管道
+    if (ret < 0) {
+        perror("pipe error");
+        return -1;
+    }
+
+    pid_t pid = fork();//创建子进程
+    if (pid == 0) {//子进程从管道读取数据
+        //child
+        //close(pipefd[1]);//
+        sleep(1);
+        char buf[1024] = {0};
+        int ret = read(pipefd[0], buf, 1023);//最后一个字节放'\0'
+        if (ret < 0) {
+            perror("read error");
+            return -1;
+        }
+        printf("buf：%s\n", buf);//打印读出的数据
+    }else if (pid > 0) {//父进程向管道写入数据
+        //parent
+        //close(pipefd[1]);//关闭写端
+       //sleep(3000);
+        int total = 0;
+        char *ptr = "螺蛳粉闻着臭，吃着香~~\n";
+        //write(句柄，数据，长度)
+        while(1) {
+            int ret = write(pipefd[1], ptr, strlen(ptr));
+            if (ret < 0) {//如果写入失败，则打印错误
+                perror("write error");
+                return -1;
+            }
+            total += ret;//记录写入管道的次数
+            printf("实际写入数据长度:%d\n", total);
+        }
+    }
+    return 0;
+}
