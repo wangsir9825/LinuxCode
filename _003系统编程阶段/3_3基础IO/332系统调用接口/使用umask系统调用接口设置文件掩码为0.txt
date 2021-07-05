@@ -1,0 +1,16 @@
+#include <stdio.h>
+#include <fcntl.h>//fopen
+#include <unistd.h>//close
+#include <sys/stat.h> // umask
+int main()
+{
+	umask(0); // 将当前进程的文件创建权限掩码设置为0
+    int fd = open("tmp.txt", O_RDWR|O_CREAT);
+    if(fd < 0)
+    {
+        perror("open error");
+        return -1;
+    }
+    close(fd);
+    return 0;
+}
