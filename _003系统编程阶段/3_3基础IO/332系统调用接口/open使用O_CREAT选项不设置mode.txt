@@ -1,0 +1,14 @@
+#include <stdio.h>
+#include <fcntl.h>//fopen
+#include <unistd.h>//close
+int main()
+{
+    int fd = open("tmp.txt", O_RDWR|O_CREAT);
+    if(fd < 0)
+    {
+        perror("open error");
+        return -1;
+    }
+    close(fd);
+    return 0;
+}
