@@ -1,0 +1,15 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <signal.h> // kill
+
+int main (int argc, char *argv[])
+{
+    //kill(进程id， 信号值)
+    kill(getpid(), SIGINT); // 给自己发送一个2号中断信号
+    while(1) {
+        printf("------------\n");
+        sleep(10);
+    }
+    return 0;
+}
