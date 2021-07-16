@@ -1,0 +1,13 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <signal.h>
+int main (int argc, char *argv[])
+{
+    abort();
+    while(1) {
+        printf("------------\n");
+        sleep(10);
+    }
+    return 0;
+}
