@@ -1,0 +1,22 @@
+#include <stdio.h>
+#include <fcntl.h>//fopen
+#include <unistd.h>//close、read
+#include <string.h> // strlen
+int main()
+{
+    int fd = open("tmp.txt", O_RDWR | O_CREAT, 0664);
+    if(fd < 0)
+    {
+        perror("open error");
+        return -1;
+    }
+    int ret = lseek(fd, 0, SEEK_END);
+    if(ret < 0)
+    {
+        perror("read error");
+        return -1;
+    }
+    printf("文件长度为：%d\n", ret);
+    close(fd);
+    return 0;
+}
