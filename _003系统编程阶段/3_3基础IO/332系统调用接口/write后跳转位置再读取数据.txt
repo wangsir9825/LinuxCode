@@ -1,0 +1,37 @@
+#include <stdio.h>
+#include <fcntl.h>//fopen
+#include <unistd.h>//close、read
+#include <string.h> // strlen
+int main()
+{
+    int fd = open("tmp.txt", O_RDWR | O_CREAT, 0664);
+    if(fd < 0)
+    {
+        perror("open error");
+        return -1;
+
+    }
+    const char *ptr = "The sun is shining. Birds are chirping.阳光明媚，鸟鸣啾啾。\n";// 70个字节
+    if(write(fd, ptr, strlen(ptr)) < 0) // 写
+    {
+        perror("write error");
+        return -1;
+
+    }
+    if(lseek(fd, 0, SEEK_SET) < 0) // 跳转
+    {
+        perror("read error");
+        return -1;
+
+    }
+    char buf[1024] = {0};
+    int ret = read(fd, buf, 1023);
+    if(ret < 0) // 读
+    {
+        perror("read error");
+        return -1;
+    }
+    printf("返回值ret = %d\n读到的数据：%s", ret, buf);
+    close(fd);
+    return 0;
+}
