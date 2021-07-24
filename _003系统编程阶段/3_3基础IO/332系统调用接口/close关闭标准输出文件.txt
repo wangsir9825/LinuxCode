@@ -1,0 +1,10 @@
+#include <stdio.h> // printf
+#include <unistd.h> // close/sleep
+
+int main()
+{
+    printf("Hello world!");
+    close(1);
+    sleep(3);
+    return 0;
+}
