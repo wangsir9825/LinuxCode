@@ -1,0 +1,20 @@
+#include <stdio.h> // printf
+#include <unistd.h> // sleep
+#include <signal.h> // signal
+int a = 1;
+void sigcb(int a) // 自定义信号回调函数
+{
+    a = 0;
+    printf("\na的值被修改为%d\n", a);
+}
+int main()
+{
+    signal(SIGINT, sigcb); // 修改SIGINT信号的处理方式为自定义方式
+    while(a)
+    {
+    	printf("Hello world!\n");
+    	sleep(1);
+    }
+    printf("跳出循环，程序正常退出\n");
+    return 0;
+}
