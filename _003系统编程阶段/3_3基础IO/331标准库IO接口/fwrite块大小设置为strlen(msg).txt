@@ -1,0 +1,16 @@
+#include <stdio.h>// fopen perror
+#include <string.h>// strlen
+int main()
+{
+    FILE *fp = fopen("myfile", "w");//以只写权限打开文件，若文件存在则清空内容，文件不存在则重建文件
+    if(fp == NULL)
+    {
+        perror("fopen error");
+        return -1;
+    }
+    const char *msg = "Hello world!\n";// msg的大小为13个字节
+    int ret = fwrite(msg, strlen(msg), 1, fp);//将hello world！写入文件中，总共写入1块数据，每块数据大小为20个字节
+    fclose(fp);// 关闭文件
+    printf("fwrite的返回值是：%d\n", ret);//打印fwrite的返回值
+    return 0;
+}
