@@ -1,0 +1,17 @@
+#include <stdio.h> // printf、fflush
+#include <fcntl.h> // open
+#include <unistd.h> // close
+
+int main()
+{
+    close(1); // 关闭标准输出文件
+    int fd = open("test.txt", O_CREAT|O_RDWR, 0664);
+    if(fd < 0){
+        perror("open error");
+        return -1;
+    }
+    printf("test.txt文件描述符fd = %d\n", fd); // 打印文件描述符
+    fflush(stdout); // 刷新输出缓冲区
+    close(fd);
+    return 0;
+}
