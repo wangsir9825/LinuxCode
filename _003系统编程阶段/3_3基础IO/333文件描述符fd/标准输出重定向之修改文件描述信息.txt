@@ -1,0 +1,17 @@
+#include <stdio.h> // printf、fflush
+#include <fcntl.h> // open
+#include <unistd.h> // close、dup2
+
+int main()
+{
+    int fd = open("test.txt", O_CREAT|O_RDWR, 0664);
+    if(fd < 0){
+        perror("open error");
+        return -1;
+    }
+    dup2(fd,1); // 将1位置的文件描述信息修改成test.txt的文件描述信息
+    printf("test.txt文件描述符fd = %d\n", fd); // 打印文件描述符
+    fflush(stdout); // 刷新输出缓冲区
+    close(fd);
+    return 0;
+}
