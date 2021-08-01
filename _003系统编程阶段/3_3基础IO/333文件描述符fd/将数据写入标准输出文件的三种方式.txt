@@ -1,0 +1,11 @@
+#include <stdio.h> // fwrite
+#include <unistd.h> // write sleep
+int main()
+{
+    
+    printf("printf被调用  ");
+    fwrite("fwrite is called  ", 18, 1, stdout); // 将数据写入到标准输出文件中（stdout），数据有1块，每块大小为18个字节
+    write(1, "write is called  ", 17); // 将数据写入到标准输出文件（1），共写入17个字符
+    sleep(3);
+    return 0;
+}
