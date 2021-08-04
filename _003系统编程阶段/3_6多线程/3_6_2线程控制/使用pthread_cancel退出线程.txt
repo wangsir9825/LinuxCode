@@ -1,0 +1,30 @@
+#include <stdio.h>
+#include <unistd.h> // sleep
+#include <pthread.h> // pthread_create、pthread_cancel
+void *thr_entry(void *arg) // 线程入口函数
+{
+    char *ptr = (char *)arg;
+    while(1) {
+        printf("%s\n", ptr);
+        sleep(1);
+    }
+    return NULL;
+}
+int main (int argc, char *argv[])
+{
+    pthread_t tid;
+    int ret;
+    char ptr[] = "我只是一个普通线程!"; // 这里不能是常字符串
+    ret = pthread_create(&tid, NULL, thr_entry, ptr); // 创建线程，让其处理thr_entry函数
+    if (ret != 0) {
+        printf("thread create failed!\n");
+        return -1;
+    }
+    sleep(3);
+    pthread_cancel(tid); // 使用pthread_cancel退出线程
+    while(1) {
+        printf("我是主线程!\n");
+        sleep(1);
+    }
+    return 0;
+}
