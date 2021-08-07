@@ -1,0 +1,34 @@
+#include <stdio.h>
+#include <unistd.h> // sleep
+#include <pthread.h> // pthread_create、pthread_cancel、pthread_join、pthread_self
+#include <errno.h> // EINVAL
+void *thr_entry(void *arg) // 线程入口函数
+{
+    pthread_detach(pthread_self()); // 线程分离
+    char *ptr = (char *)arg;
+    printf("%s\n", ptr);
+    sleep(5);
+    pthread_exit(NULL); // 使用pthread_exit退出线程，退出信息为空
+}
+int main (int argc, char *argv[])
+{
+    pthread_t tid;
+    int ret;
+    char ptr[] = "执行普通线程!"; // 这里不能是常字符串
+    ret = pthread_create(&tid, NULL, thr_entry, ptr); // 创建线程，让其处理thr_entry函数
+    if (ret != 0) {
+        printf("thread create failed!\n");
+        return -1;
+    }
+    sleep(1); // 确保先进入普通进程进行线程分离
+    void *retval;
+    ret = pthread_join(tid, &retval);// 使用pthread_join阻塞等待线程退出
+    if (ret == EINVAL) {
+        printf("pthread_join函数的返回值为EINVAL。\n");
+    }
+    while(1) {
+        printf("我是主线程!\n");
+        sleep(1);
+    }
+    return 0;
+}
