@@ -1,0 +1,36 @@
+#include <stdio.h>
+#include <unistd.h> // usleep
+#include <pthread.h> // pthread_self、pthread_exit、pthread_create、pthread_join
+
+int tickets = 10;
+void *scalpers(void *arg) // 线程入口函数
+{
+    while(1) {
+        if (tickets > 0) { // 有票则抢
+            usleep(1); // 等待1微秒 
+            printf("我是%p，抢到了一张票，票号为：%d\n", 
+                    pthread_self(), tickets); // 打印线程ID和票号
+            tickets--;
+        }else {
+            pthread_exit(NULL); // 没票则退出
+        }
+    }
+    return NULL;
+}
+int main (int argc, char *argv[])
+{
+    int ret;
+    pthread_t tid[4];
+    int i = 0;
+    for (i = 0; i < 4; i++) { // 创建4个线程
+        ret = pthread_create(&tid[i], NULL, scalpers, NULL);
+        if (ret != 0) {
+            printf("create thread error\n");
+            return -1;
+        }
+    }
+    for (i = 0; i < 4; i++) {
+        pthread_join(tid[i], NULL); // 等待线程退出，释放资源
+    }
+    return 0;
+}
