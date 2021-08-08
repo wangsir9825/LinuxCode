@@ -1,0 +1,61 @@
+#include <stdio.h>
+#include <unistd.h> // sleep
+#include <pthread.h>
+
+int var = 0;
+pthread_cond_t cond; // 条件变量
+pthread_mutex_t mutex; // 互斥锁
+
+void *thread1(void *arg) // 线程1入口函数
+{
+    while(1) {
+        pthread_mutex_lock(&mutex);//加锁
+        if (var == 0) {
+            pthread_cond_wait(&cond, &mutex);//阻塞等待，将线程1放入pcb等待队列中
+        }
+        var = 0;
+        sleep(1);
+        printf("我是线程1，我已经将变量的值修改为0\n");
+        pthread_cond_signal(&cond); // 唤醒在cond上被阻塞的进程(相当于唤醒线程2)
+        pthread_mutex_unlock(&mutex); // 解锁
+    }
+    return NULL;
+}
+void *thread2(void *arg) // 线程2入口函数
+{
+    while(1) {
+        pthread_mutex_lock(&mutex);//加锁
+        if (var == 1) {
+            pthread_cond_wait(&cond, &mutex); // 阻塞等待，将线程2放入pcb等待队列中
+        }
+        var = 1;
+        sleep(1);
+        printf("我是线程2，我已经将变量的值修改为1\n");
+        pthread_cond_signal(&cond); // 唤醒在cond上被阻塞的进程(相当于唤醒线程1)
+        pthread_mutex_unlock(&mutex); // 解锁
+    }
+    return NULL;
+}
+int main(int argc, char *argv[])
+{
+    pthread_t tid1, tid2; // 线程ID
+    int ret;
+    pthread_mutex_init(&mutex, NULL); // 初始化互斥锁
+    pthread_cond_init(&cond, NULL); // 初始化条件变量
+    // 创建两个线程
+    ret = pthread_create(&tid1, NULL, thread1, NULL); // 线程1
+    if (ret != 0) {
+        printf("thread create error\n");
+        return -1;
+    }
+    ret = pthread_create(&tid2, NULL, thread2, NULL); // 线程2
+    if (ret != 0) {
+        printf("thread create error\n");
+        return -1;
+    }
+    pthread_join(tid1, NULL); // 等待释放线程1
+    pthread_join(tid2, NULL); // 等待释放线程2
+    pthread_mutex_destroy(&mutex); // 5.销毁互斥锁
+    pthread_cond_destroy(&cond); // 5.销毁条件变量
+    return 0;
+}
