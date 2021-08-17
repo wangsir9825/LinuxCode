@@ -1,0 +1,14 @@
+#include<stdio.h> // printf
+int func()
+{
+    printf("执行func函数\n");
+    return 0; // 退出func函数
+    printf("func函数over\n");
+}
+int main()
+{
+    func();
+    printf("执行main函数\n");
+    return 0;
+    printf("main函数over\n");
+}
