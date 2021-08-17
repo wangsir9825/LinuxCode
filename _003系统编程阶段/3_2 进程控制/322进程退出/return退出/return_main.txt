@@ -1,0 +1,7 @@
+#include <stdio.h> //printf
+int main()
+{
+    printf("hello world!\n");
+    return 0;
+    printf("Things have a way of always working out right.\n"); // 车到山前必有路，船到桥头自然直。
+}
