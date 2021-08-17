@@ -1,0 +1,11 @@
+#include <stdio.h> //printf
+#include <unistd.h> //fork、pid_t、getpid、getppid
+#include <stdlib.h> // exit
+int main()
+{
+    printf("I am main function, my PID is : %d\n", getpid());
+    printf("My father's PID is %d\n", getppid());
+		exit(0);
+    printf("hello world!\n");
+    return 0;
+}
