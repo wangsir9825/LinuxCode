@@ -1,0 +1,91 @@
+#include <iostream>
+#include <queue> // 队列
+#include <unistd.h>
+#include <pthread.h> // 线程
+
+#define MAX_QUEUE 5
+class BlockQueue{
+    private:
+        int _capacity;//队列容量
+        std::queue<int> _queue; //临界资源,需要加锁保护
+        pthread_mutex_t _mutex; // 互斥锁（实现互斥）
+        pthread_cond_t _cond_pro; // 生产者条件变量
+        pthread_cond_t _cond_cus; // 消费者条件变量
+    public:
+        BlockQueue(int que = MAX_QUEUE):_capacity(que){ // 构造函数，使用参数列表初始化队列容量
+            pthread_mutex_init(&_mutex, NULL); // 初始化互斥锁
+            pthread_cond_init(&_cond_pro, NULL);
+            pthread_cond_init(&_cond_cus, NULL);
+        }  
+        ~BlockQueue(){ // 析构函数
+            pthread_mutex_destroy(&_mutex);
+            pthread_cond_destroy(&_cond_pro);
+            pthread_cond_destroy(&_cond_cus);
+        }
+        //
+        bool Push(const int &data) { // 入队接口（数据入队）
+            pthread_mutex_lock(&_mutex); // 将队列加锁
+            while(_queue.size() == _capacity) { // 如果队列满，则阻塞线程
+                pthread_cond_wait(&_cond_pro, &_mutex); // 阻塞线程，将线程放入生产者条件变量的队列中
+            }
+            _queue.push(data); // 将数据放入队列中
+            pthread_cond_signal(&_cond_cus); // 唤醒消费者线程
+            pthread_mutex_unlock(&_mutex); // 解锁队列
+            return true;
+        }
+        bool Pop(int *data) { // 出队接口（数据出队）
+            pthread_mutex_lock(&_mutex); // 加锁
+            while(_queue.empty() == true) { // 如果队列为空，则阻塞消费者线程
+                pthread_cond_wait(&_cond_cus, &_mutex);
+            }
+            *data = _queue.front(); // 获取队列首元素
+            _queue.pop(); // 删除元素
+            pthread_cond_signal(&_cond_pro); // 唤醒生产者线程
+            pthread_mutex_unlock(&_mutex); // 解锁
+        }
+};
+
+void *productor(void *arg) // 生产者线程入口函数
+{
+    BlockQueue *q = (BlockQueue*)arg;
+    int data = 0;
+    while(1) {
+        q->Push(data); // 将数据添加到队列中
+        printf("push data: %d\n", data++);
+        sleep(1);
+    }
+    return NULL;
+}
+void *customer(void *arg) // 消费者线程入口函数
+{
+    BlockQueue *q = (BlockQueue*)arg;
+    while(1) {
+        int data = 0;
+        q->Pop(&data); // 将数据从队列中取出
+        printf("pop data: %d\n", data);
+    }
+    return NULL;
+}
+int main (int argc, char *argv[])
+{
+    BlockQueue q; // 队列
+    int ret;
+    pthread_t ptid[4], ctid[4];
+    for (int i = 0; i < 4; i++) {
+        ret = pthread_create(&ptid[i], NULL, productor, &q); // 创建4个生产者线程
+        if (ret != 0) {
+            printf("pro_thread create error\n");
+            return -1;
+        }
+        ret = pthread_create(&ctid[i], NULL, customer, &q); // 创建4个消费者线程
+        if (ret != 0) {
+            printf("cus_thread create error\n");
+            return -1;
+        }
+    }
+    for (int i = 0; i < 4; i++) { // 等待线程
+        pthread_join(ptid[i], NULL);
+        pthread_join(ctid[i], NULL);
+    }
+    return 0;
+}
